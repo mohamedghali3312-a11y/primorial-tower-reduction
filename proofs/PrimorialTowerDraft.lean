@@ -282,9 +282,8 @@ theorem erdosStrausMod12Eq9 (k : Nat) :
   have h_3k3 : 3 * k + 3 = 3 * (k + 1) := by omega
   have h_12k12 : 4 * (3 * k + 3) = 12 * (k + 1) := by omega
   have h2 : (12 * k + 9) * (k + 1) + (3 * k + 3) = 4 * (3 * k + 3) * (k + 1) := by
-    rw [h_3k3, h_12k12, ← Nat.add_mul]
+    rw [h_12k12, h_3k3, ← Nat.add_mul]
   rw [h1, h2]
-
 #print axioms erdosStrausMasterSplit
 #print axioms erdosStrausMod4Eq3
 #print axioms erdosStrausMod12Eq9
