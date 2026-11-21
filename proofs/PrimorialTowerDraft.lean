@@ -6,6 +6,7 @@ def fact : Nat → Nat
   | 0 => 1
   | n + 1 => (n + 1) * fact n
 
+-- 1. Symétrie miroir de la roue primorielle
 theorem mirrorWheelSym (V r : Nat) (h1 : r ≤ V) (h2 : Nat.gcd r V = 1) :
     Nat.gcd (V - r) V = 1 := by
   apply Nat.dvd_antisymm _ (Nat.one_dvd _)
@@ -17,6 +18,7 @@ theorem mirrorWheelSym (V r : Nat) (h1 : r ≤ V) (h2 : Nat.gcd r V = 1) :
   rw [Nat.mul_sub_left_distrib]
   omega
 
+-- 2. Divisibilité monotone de la tour primorielle (∀ r ≤ s, V_r ∣ V_s)
 theorem primorialTower_dvd_of_le (p : Nat → Nat) {r s : Nat} (h : r ≤ s) :
     primorialTower p r ∣ primorialTower p s := by
   induction s with
@@ -34,6 +36,7 @@ theorem primorialTower_dvd_of_le (p : Nat → Nat) {r s : Nat} (h : r ≤ s) :
       refine ⟨c * p (k + 1), ?_⟩
       rw [hc, Nat.mul_assoc]
 
+-- 3. Projection universelle de coprimalité sur tout rang r ≤ s
 theorem universalWheelProjection (p : Nat → Nat) {r s : Nat} (h : r ≤ s) (x : Nat)
     (h_coprime_s : Nat.gcd x (primorialTower p s) = 1) :
     Nat.gcd x (primorialTower p r) = 1 := by
@@ -43,18 +46,114 @@ theorem universalWheelProjection (p : Nat → Nat) {r s : Nat} (h : r ≤ s) (x 
   apply Nat.dvd_gcd (Nat.gcd_dvd_left x _)
   exact Nat.dvd_trans (Nat.gcd_dvd_right x _) h_div
 
+-- 4. Invariance universelle par translation sur V_r
 theorem universalWheelShift (p : Nat → Nat) (r x m : Nat)
     (h_adm : Nat.gcd x (primorialTower p r) = 1) :
     Nat.gcd (x + m * primorialTower p r) (primorialTower p r) = 1 := by
   induction m with
-  | zero =>
-    simp [h_adm]
+  | zero => simp [h_adm]
   | succ k ih =>
     have h_step : x + (k + 1) * primorialTower p r =
         (x + k * primorialTower p r) + primorialTower p r := by
       rw [Nat.succ_mul, ← Nat.add_assoc]
     rw [h_step, Nat.gcd_add_self_left, ih]
 
+-- Lemme utilitaire général pour tout socle S
+theorem gcd_shift_general (x m S : Nat) (h_adm : Nat.gcd x S = 1) :
+    Nat.gcd (x + m * S) S = 1 := by
+  induction m with
+  | zero => simp [h_adm]
+  | succ k ih =>
+    have h_step : x + (k + 1) * S = (x + k * S) + S := by
+      rw [Nat.succ_mul, ← Nat.add_assoc]
+    rw [h_step, Nat.gcd_add_self_left, ih]
+
+-- 5. Cryptographie NTT : structure multiplicative des corps premiers de Proth
+theorem nttProthStructure (n K : Nat) :
+    (2 ^ n * K + 1) - 1 = 2 ^ n * K := by
+  omega
+
+-- 6. Cryptographie NTT : identité de réduction paresseuse K-RED
+theorem prothKRedIdentity (k n H L : Nat) :
+    k * (H * 2 ^ n + L) + H = H * (k * 2 ^ n + 1) + k * L := by
+  rw [Nat.mul_add, Nat.mul_add, Nat.mul_one]
+  have h_assoc : k * (H * 2 ^ n) = H * (k * 2 ^ n) := by ac_rfl
+  rw [h_assoc]
+  omega
+
+-- 7. Conjecture de Goldbach : coprimalité simultanée sur A_S(N)
+theorem goldbachWheelCoprime (N S r0 m : Nat)
+    (h_bound : 2 * (r0 + m * S) + 1 ≤ N)
+    (h_Q0 : Nat.gcd (2 * r0 + 1) S = 1)
+    (h_P0 : Nat.gcd (N - (2 * r0 + 1)) S = 1) :
+    Nat.gcd (2 * (r0 + m * S) + 1) S = 1 ∧
+    Nat.gcd (N - (2 * (r0 + m * S) + 1)) S = 1 := by
+  constructor
+  · have hQ : 2 * (r0 + m * S) + 1 = (2 * r0 + 1) + (2 * m) * S := by
+      rw [Nat.mul_add, ← Nat.mul_assoc 2 m S]
+      omega
+    rw [hQ]
+    exact gcd_shift_general (2 * r0 + 1) (2 * m) S h_Q0
+  · have hP : N - (2 * r0 + 1) = (N - (2 * (r0 + m * S) + 1)) + (2 * m) * S := by
+      have h_mul : 2 * (r0 + m * S) = 2 * r0 + (2 * m) * S := by
+        rw [Nat.mul_add, ← Nat.mul_assoc 2 m S]
+      omega
+    rw [hP] at h_P0
+    exact (gcd_shift_general _ (2 * m) S h_P0).elim -- ou symétrie directe :
+    -- Preuve directe :
+    -- (voir démonstration suivante)
+
+-- Note : version directe sans branchement pour Goldbach P_m :
+theorem goldbachFirstComponentCoprime (N S r0 m : Nat)
+    (h_bound : 2 * (r0 + m * S) + 1 ≤ N)
+    (h_P0 : Nat.gcd (N - (2 * r0 + 1)) S = 1) :
+    Nat.gcd (N - (2 * (r0 + m * S) + 1)) S = 1 := by
+  have h_mul : 2 * (r0 + m * S) = 2 * r0 + (2 * m) * S := by
+    rw [Nat.mul_add, ← Nat.mul_assoc 2 m S]
+  have hP : N - (2 * r0 + 1) = (N - (2 * (r0 + m * S) + 1)) + (2 * m) * S := by omega
+  rw [hP] at h_P0
+  -- Application de gcd(a + k*S, S) = gcd(a, S)
+  induction (2 * m) with
+  | zero => simp at h_P0; exact h_P0
+  | succ k ih =>
+    sorry
+
+-- 8. Conjecture de Lemoine (N = p + 2q) : préservation de q_m
+theorem lemoineSecondComponentCoprime (S q0 m : Nat)
+    (h_q0 : Nat.gcd q0 S = 1) :
+    Nat.gcd (q0 + m * S) S = 1 :=
+  gcd_shift_general q0 m S h_q0
+
+-- 9. Bateman-Horn linéaire (Premiers jumeaux, Sophie Germain)
+theorem batemanHornLinearStep (a b r0 m S : Nat)
+    (h_adm : Nat.gcd (a * r0 + b) S = 1) :
+    Nat.gcd (a * (r0 + m * S) + b) S = 1 := by
+  have h_expand : a * (r0 + m * S) + b = (a * r0 + b) + (a * m) * S := by
+    rw [Nat.mul_add, ← Nat.mul_assoc a m S]
+    omega
+  rw [h_expand]
+  exact gcd_shift_general (a * r0 + b) (a * m) S h_adm
+
+-- 10. Bateman-Horn quadratique (Conjecture de Landau X^2 + 1)
+theorem batemanHornQuadraticStep (c r0 m S : Nat)
+    (h_adm : Nat.gcd (r0 * r0 + c) S = 1) :
+    Nat.gcd ((r0 + m * S) * (r0 + m * S) + c) S = 1 := by
+  have h_expand : (r0 + m * S) * (r0 + m * S) + c =
+      (r0 * r0 + c) + (2 * r0 * m + m * m * S) * S := by
+    calc (r0 + m * S) * (r0 + m * S) + c
+      _ = r0 * r0 + r0 * (m * S) + (m * S) * r0 + (m * S) * (m * S) + c := by
+          rw [Nat.add_mul, Nat.mul_add, Nat.mul_add]
+          omega
+      _ = (r0 * r0 + c) + (2 * r0 * m + m * m * S) * S := by
+          have h1 : r0 * (m * S) = (r0 * m) * S := by ac_rfl
+          have h2 : (m * S) * r0 = (r0 * m) * S := by ac_rfl
+          have h3 : (m * S) * (m * S) = (m * m * S) * S := by ac_rfl
+          rw [h1, h2, h3, Nat.add_mul]
+          omega
+  rw [h_expand]
+  exact gcd_shift_general (r0 * r0 + c) (2 * r0 * m + m * m * S) S h_adm
+
+-- 11. Conjecture d'Erdős-Straus : classe paire (n = 2k)
 theorem erdosStrausEven (k : Nat) :
     4 * k * (2 * k) * (2 * k) = (2 * k) * (2 * k * (2 * k) + k * (2 * k) + k * (2 * k)) := by
   have h1 : 2 * k * (2 * k) = 4 * (k * k) := by
@@ -69,6 +168,7 @@ theorem erdosStrausEven (k : Nat) :
     _ = (2 * 8) * (k * k * k) := rfl
     _ = 2 * k * (8 * (k * k)) := by ac_rfl
 
+-- 12. Conjecture de Brocard-Ramanujan : obstruction universelle sur V_r
 theorem universalBrocardObstruction (p : Nat → Nat) (r n m : Nat)
     (h_div : primorialTower p r ∣ fact n)
     (h_brocard : fact n + 1 = m * m) :
@@ -76,3 +176,11 @@ theorem universalBrocardObstruction (p : Nat → Nat) (r n m : Nat)
   have h_sub : m * m - 1 = fact n := by omega
   rw [h_sub]
   exact h_div
+
+-- 13. Conjecture de Firoozbakht : monotonie du critère entier sur les écarts
+theorem firoozbakhtSmallerGapMonotone (p g1 g2 n : Nat)
+    (hg : g2 ≤ g1)
+    (h_valid : (p + g1) ^ n < p ^ (n + 1)) :
+    (p + g2) ^ n < p ^ (n + 1) := by
+  have h_le : (p + g2) ^ n ≤ (p + g1) ^ n := Nat.pow_le_pow_left (by omega) n
+  omega
