@@ -53,7 +53,7 @@ theorem universalWheelShift (p : Nat → Nat) (r x m : Nat)
     have h_step : x + (k + 1) * primorialTower p r =
         (x + k * primorialTower p r) + primorialTower p r := by
       rw [Nat.succ_mul, ← Nat.add_assoc]
-    rw [h_step, Nat.gcd_add_self_right, ih]
+    rw [h_step, Nat.gcd_add_self_left, ih]
 
 theorem erdosStrausEven (k : Nat) :
     4 * k * (2 * k) * (2 * k) = (2 * k) * (2 * k * (2 * k) + k * (2 * k) + k * (2 * k)) := by
