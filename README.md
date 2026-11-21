@@ -2,10 +2,8 @@
 
 **Exploration algébrique et algorithmique en mémoire bornée $O(1)$ des constellations polynomiales et conjectures arithmétiques**
 
-[![Auteur](https://shields.io)](https://orcid.org)
-[![ORCID](https://shields.io)](https://orcid.org)
-[![Lean 4 CI](https://shields.io)](../../actions)
-[![License: MIT](https://shields.io)](LICENSE)
+**Auteur :** Mohamed Ghali (`ORCID: 0009-0006-3364-5341`) • **Certification :** Lean 4 Pur (22 démonstrations vérifiées ✅) • **Licence :** MIT
+
 
 > **📋 Note méthodologique :**  
 > Ce dépôt présente des **démonstrations constructives de réduction modulaire** généralisant le filtrage par roues primorielles $V_r$ à diverses familles de polynômes et conjectures ouvertes (Goldbach, Lemoine, Bateman--Horn, Erdős--Straus, Brocard--Ramanujan, Wieferich, Firoozbakht et cryptographie NTT).  
