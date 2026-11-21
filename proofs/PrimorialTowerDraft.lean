@@ -262,8 +262,11 @@ theorem erdosStrausMod4Eq3 (k : Nat) :
   apply erdosStrausMasterSplit (4 * k + 3) (k + 1) ((4 * k + 3) * (k + 1))
   have h1 : 4 * (k + 1) * ((4 * k + 3) * (k + 1)) =
       (4 * (k + 1) * (k + 1)) * (4 * k + 3) := by ac_rfl
+  have h_coeff : 4 * (k + 1) = 4 * k + 4 := by omega
   have h2 : (4 * k + 3) * (k + 1) + (k + 1) = 4 * (k + 1) * (k + 1) := by
-    rw [Nat.add_mul, Nat.mul_add, Nat.one_mul]
+    rw [h_coeff, Nat.add_mul (4 * k) 3 (k + 1), Nat.mul_add (4 * k) k 1, Nat.mul_one,
+        Nat.mul_add 3 k 1, Nat.mul_one, Nat.add_mul (4 * k) 4 (k + 1),
+        Nat.mul_add (4 * k) k 1, Nat.mul_one, Nat.mul_add 4 k 1, Nat.mul_one]
     omega
   rw [h1, h2]
 
