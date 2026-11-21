@@ -74,17 +74,17 @@ theorem erdosStrausEven (k : Nat) :
   intro n x y z
   dsimp only [n, x, y, z]
   have h1 : 2 * k * (2 * k) = 4 * (k * k) := by
-    rw [Nat.mul_assoc 2 k, Nat.mul_comm k (2 * k), ← Nat.mul_assoc 2 2, Nat.mul_assoc]
-  have h2 : k * (2 * k) = 2 * (k * k) := by
-    rw [Nat.mul_comm k (2 * k), Nat.mul_assoc 2 k k]
+    calc 2 * k * (2 * k) = (2 * 2) * (k * k) := by ac_rfl
+    _ = 4 * (k * k) := rfl
+  have h2 : k * (2 * k) = 2 * (k * k) := by ac_rfl
   rw [h1, h2]
   have h3 : 4 * (k * k) + 2 * (k * k) + 2 * (k * k) = 8 * (k * k) := by omega
   rw [h3]
-  have h_lhs : 4 * k * (2 * k) * (2 * k) = 16 * (k * (k * k)) := by
-    calc 4 * k * (2 * k) * (2 * k)
-      _ = (4 * k) * (4 * (k * k)) := by rw [Nat.mul_assoc (4 * k), h1]
-      _ = 16 * (k * (k * k)) := by
-          rw [Nat.mul_assoc 4 k, Nat.mul_comm k (4 * (k * k)), ← Nat.mul_assoc 4 4, Nat.mul_assoc]
+  calc 4 * k * (2 * k) * (2 * k)
+    _ = (4 * 2 * 2) * (k * k * k) := by ac_rfl
+    _ = (2 * 8) * (k * k * k) := rfl
+    _ = 2 * k * (8 * (k * k)) := by ac_rfl
+    rw [Nat.mul_assoc 4 k, Nat.mul_comm k (4 * (k * k)), ← Nat.mul_assoc 4 4, Nat.mul_assoc]
   have h_rhs : 2 * k * (8 * (k * k)) = 16 * (k * (k * k)) := by
     rw [Nat.mul_assoc 2 k, Nat.mul_comm k (8 * (k * k)), ← Nat.mul_assoc 2 8, Nat.mul_assoc]
   rw [h_lhs, h_rhs]
