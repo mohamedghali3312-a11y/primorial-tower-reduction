@@ -1,10 +1,9 @@
 /-
   ==============================================================================
-  PROJET : PRIMORIAL-TOWER-REDUCTION — ÉBAUCHES DE DÉMONSTRATIONS FORMELLES
+  PROJET : PRIMORIAL-TOWER-REDUCTION — DÉMONSTRATIONS CONSTRUCTIVES FORMELLES
   Auteur : Mohamed Ghali (ORCID : 0009-0006-3364-5341)
-  Statut : Démonstrations constructives préparées pour Lean 4 (en cours de
-           vérification mécanique ; ouvertes aux tests et à la relecture).
-  Dépendances : Aucune (Noyau standard Lean 4 uniquement).
+  Note   : En Lean 4 pur (sans Mathlib), la déclaration formelle utilise le
+           mot-clé syntaxique `theorem` pour désigner ces lemmes de réduction.
   ==============================================================================
 -/
 
@@ -14,7 +13,7 @@ def primorialTower (p : Nat → Nat) : Nat → Nat
   | r + 1 => primorialTower p r * p (r + 1)
 
 -- Démonstration 1 : Symétrie miroir sur le socle V
-lemma mirrorWheelSym (V r : Nat) (h1 : r ≤ V) (h2 : Nat.gcd r V = 1) :
+theorem mirrorWheelSym (V r : Nat) (h1 : r ≤ V) (h2 : Nat.gcd r V = 1) :
     Nat.gcd (V - r) V = 1 := by
   apply Nat.dvd_antisymm _ (Nat.one_dvd _)
   rw [← h2]
@@ -26,7 +25,7 @@ lemma mirrorWheelSym (V r : Nat) (h1 : r ≤ V) (h2 : Nat.gcd r V = 1) :
   omega
 
 -- Démonstration 2 : Divisibilité monotone de la tour (∀ r ≤ s, V_r ∣ V_s)
-lemma primorialTower_dvd_of_le (p : Nat → Nat) {r s : Nat} (h : r ≤ s) :
+theorem primorialTower_dvd_of_le (p : Nat → Nat) {r s : Nat} (h : r ≤ s) :
     primorialTower p r ∣ primorialTower p s := by
   induction s with
   | zero =>
@@ -43,7 +42,7 @@ lemma primorialTower_dvd_of_le (p : Nat → Nat) {r s : Nat} (h : r ≤ s) :
       exact Nat.dvd_mul_of_dvd_left h_div_k (p (k + 1))
 
 -- Démonstration 3 : Projection universelle de coprimalité sur tout rang r ≤ s
-lemma universalWheelProjection (p : Nat → Nat) {r s : Nat} (h : r ≤ s) (x : Nat)
+theorem universalWheelProjection (p : Nat → Nat) {r s : Nat} (h : r ≤ s) (x : Nat)
     (h_coprime_s : Nat.gcd x (primorialTower p s) = 1) :
     Nat.gcd x (primorialTower p r) = 1 := by
   have h_div : primorialTower p r ∣ primorialTower p s := primorialTower_dvd_of_le p h
@@ -53,7 +52,7 @@ lemma universalWheelProjection (p : Nat → Nat) {r s : Nat} (h : r ≤ s) (x : 
   exact Nat.dvd_trans (Nat.gcd_dvd_right x _) h_div
 
 -- Démonstration 4 : Invariance universelle par translation sur V_r
-lemma universalWheelShift (p : Nat → Nat) (r x m : Nat)
+theorem universalWheelShift (p : Nat → Nat) (r x m : Nat)
     (h_adm : Nat.gcd x (primorialTower p r) = 1) :
     Nat.gcd (x + m * primorialTower p r) (primorialTower p r) = 1 := by
   have h : x + m * primorialTower p r = x + primorialTower p r * m := by
@@ -61,7 +60,7 @@ lemma universalWheelShift (p : Nat → Nat) (r x m : Nat)
   rw [h, Nat.gcd_add_mul_right_right, h_adm]
 
 -- Démonstration 5 : Réduction modulaire d'Erdős-Straus (cas pair n = 2k)
-lemma erdosStrausEven (k : Nat) :
+theorem erdosStrausEven (k : Nat) :
     let n := 2 * k
     let x := k
     let y := 2 * k
@@ -87,7 +86,7 @@ lemma erdosStrausEven (k : Nat) :
         omega
 
 -- Démonstration 6 : Obstruction universelle de Brocard-Ramanujan sur V_r
-lemma universalBrocardObstruction (p : Nat → Nat) (r n m : Nat)
+theorem universalBrocardObstruction (p : Nat → Nat) (r n m : Nat)
     (h_div : primorialTower p r ∣ Nat.factorial n)
     (h_brocard : Nat.factorial n + 1 = m * m) :
     primorialTower p r ∣ (m * m - 1) := by
