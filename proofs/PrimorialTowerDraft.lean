@@ -437,3 +437,26 @@ theorem noTwoPrimeCarmichael (p q : Nat) (hp : 1 < p) (hpq : p < q) :
 #print axioms korseltTwoPrimeIdentity
 #print axioms noTwoPrimeCarmichael
 
+-- ============================================================================
+-- CONJECTURE DE GIUGA : OBSTRUCTION MODULAIRE SUR LES PRODUITS SANS CARRÉ
+-- ============================================================================
+
+-- 32. Condition de Giuga : si p ∣ (n / p - 1) et n = p * m, alors p ∣ (m - 1)
+theorem giugaCofactorCondition (p m : Nat) (hp : 0 < p) (hm : 1 ≤ m)
+    (h_giuga : p ∣ ((p * m) / p - 1)) :
+    p ∣ (m - 1) := by
+  have h_div : (p * m) / p = m := Nat.mul_div_cancel_left m hp
+  rw [h_div] at h_giuga
+  exact h_giuga
+
+-- 33. Impossibilité d'un nombre de Giuga à deux facteurs premiers (n = p * q) :
+-- Si 1 < p < q, il est impossible que q ∣ (p - 1) (donc aucun semi-premier
+-- ne peut violer la conjecture de Giuga).
+theorem noTwoPrimeGiuga (p q : Nat) (hp : 1 < p) (hpq : p < q) :
+    ¬ (q ∣ (p - 1)) := by
+  intro h_dvd
+  have h_le : q ≤ p - 1 := Nat.le_of_dvd (by omega) h_dvd
+  omega
+
+#print axioms giugaCofactorCondition
+#print axioms noTwoPrimeGiuga
