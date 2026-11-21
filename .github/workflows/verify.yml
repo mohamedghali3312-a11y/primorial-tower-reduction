@@ -11,8 +11,10 @@ jobs:
       - name: Test du moteur Python universel V_r
         run: python3 src/vr_universal_engine.py
 
-      - name: Installation directe de Lean 4 et vérification
+      - name: Téléchargement et vérification Lean 4
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          wget -q https://github.com
-          tar --zstd -xf lean-4.14.0-linux.tar.zst
-          ./lean-4.14.0-linux/bin/lean proofs/PrimorialTowerDraft.lean
+          gh release download -R leanprover/lean4 -p "*linux.tar.zst"
+          tar --zstd -xf lean-*-linux.tar.zst
+          ./lean-*-linux/bin/lean proofs/PrimorialTowerDraft.lean
