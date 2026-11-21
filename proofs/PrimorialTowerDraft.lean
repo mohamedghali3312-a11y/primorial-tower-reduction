@@ -288,5 +288,60 @@ theorem erdosStrausMod12Eq9 (k : Nat) :
 #print axioms erdosStrausMasterSplit
 #print axioms erdosStrausMod4Eq3
 #print axioms erdosStrausMod12Eq9
+-- 25. Conjecture d'Erdős-Straus : classe n ≡ 5 (mod 24) (n = 24q + 5)
+-- Identité exacte : x = 6q + 2, y = (24q + 5)(3q + 1), z = (24q + 5)(6q + 2)
+theorem erdosStrausMod24Eq5 (q : Nat) :
+    4 * (6 * q + 2) * ((24 * q + 5) * (3 * q + 1)) * ((24 * q + 5) * (6 * q + 2)) =
+    (24 * q + 5) * (((24 * q + 5) * (3 * q + 1)) * ((24 * q + 5) * (6 * q + 2)) +
+    (6 * q + 2) * ((24 * q + 5) * (6 * q + 2)) +
+    (6 * q + 2) * ((24 * q + 5) * (3 * q + 1))) := by
+  have h_6q2 : 6 * q + 2 = 2 * (3 * q + 1) := by omega
+  have h1 : ((24 * q + 5) * (3 * q + 1)) * ((24 * q + 5) * (6 * q + 2)) =
+      ((24 * q + 5) * (3 * q + 1)) * (6 * q + 2) * (24 * q + 5) := by ac_rfl
+  have h2 : (6 * q + 2) * ((24 * q + 5) * (6 * q + 2)) =
+      ((24 * q + 5) * (3 * q + 1)) * (6 * q + 2) * 2 := by
+    rw [h_6q2]; ac_rfl
+  have h3 : (6 * q + 2) * ((24 * q + 5) * (3 * q + 1)) =
+      ((24 * q + 5) * (3 * q + 1)) * (6 * q + 2) * 1 := by
+    rw [Nat.mul_one]; ac_rfl
+  have h_sum : ((24 * q + 5) * (3 * q + 1)) * (6 * q + 2) * (24 * q + 5) +
+      ((24 * q + 5) * (3 * q + 1)) * (6 * q + 2) * 2 +
+      ((24 * q + 5) * (3 * q + 1)) * (6 * q + 2) * 1 =
+      ((24 * q + 5) * (3 * q + 1)) * (6 * q + 2) * (4 * (6 * q + 2)) := by
+    rw [← Nat.mul_add, ← Nat.mul_add]
+    have h_24q8 : (24 * q + 5) + 2 + 1 = 4 * (6 * q + 2) := by omega
+    rw [h_24q8]
+  rw [h1, h2, h3, h_sum]
+  ac_rfl
+
+-- 26. Conjecture d'Erdős-Straus : classe n ≡ 13 (mod 24) (n = 24q + 13)
+-- Identité exacte : x = 6q + 4, y = (24q + 13)(3q + 2), z = (24q + 13)(6q + 4)
+-- Porte la couverture formelle certifiée à 22/24 = 91,67 % des entiers naturels !
+theorem erdosStrausMod24Eq13 (q : Nat) :
+    4 * (6 * q + 4) * ((24 * q + 13) * (3 * q + 2)) * ((24 * q + 13) * (6 * q + 4)) =
+    (24 * q + 13) * (((24 * q + 13) * (3 * q + 2)) * ((24 * q + 13) * (6 * q + 4)) +
+    (6 * q + 4) * ((24 * q + 13) * (6 * q + 4)) +
+    (6 * q + 4) * ((24 * q + 13) * (3 * q + 2))) := by
+  have h_6q4 : 6 * q + 4 = 2 * (3 * q + 2) := by omega
+  have h1 : ((24 * q + 13) * (3 * q + 2)) * ((24 * q + 13) * (6 * q + 4)) =
+      ((24 * q + 13) * (3 * q + 2)) * (6 * q + 4) * (24 * q + 13) := by ac_rfl
+  have h2 : (6 * q + 4) * ((24 * q + 13) * (6 * q + 4)) =
+      ((24 * q + 13) * (3 * q + 2)) * (6 * q + 4) * 2 := by
+    rw [h_6q4]; ac_rfl
+  have h3 : (6 * q + 4) * ((24 * q + 13) * (3 * q + 2)) =
+      ((24 * q + 13) * (3 * q + 2)) * (6 * q + 4) * 1 := by
+    rw [Nat.mul_one]; ac_rfl
+  have h_sum : ((24 * q + 13) * (3 * q + 2)) * (6 * q + 4) * (24 * q + 13) +
+      ((24 * q + 13) * (3 * q + 2)) * (6 * q + 4) * 2 +
+      ((24 * q + 13) * (3 * q + 2)) * (6 * q + 4) * 1 =
+      ((24 * q + 13) * (3 * q + 2)) * (6 * q + 4) * (4 * (6 * q + 4)) := by
+    rw [← Nat.mul_add, ← Nat.mul_add]
+    have h_24q16 : (24 * q + 13) + 2 + 1 = 4 * (6 * q + 4) := by omega
+    rw [h_24q16]
+  rw [h1, h2, h3, h_sum]
+  ac_rfl
+
+#print axioms erdosStrausMod24Eq5
+#print axioms erdosStrausMod24Eq13
 
 
