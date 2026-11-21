@@ -276,12 +276,12 @@ theorem erdosStrausMod12Eq5 (k : Nat) :
   apply erdosStrausMasterSplit (12 * k + 5) (3 * k + 2) ((12 * k + 5) * (k + 1))
   have h1 : 4 * (3 * k + 2) * ((12 * k + 5) * (k + 1)) =
       (4 * (3 * k + 2) * (k + 1)) * (12 * k + 5) := by ac_rfl
+  have h_coeff : 4 * (3 * k + 2) = 12 * k + 8 := by omega
   have h2 : (12 * k + 5) * (k + 1) + (3 * k + 2) = 4 * (3 * k + 2) * (k + 1) := by
-    rw [Nat.add_mul, Nat.mul_add, Nat.one_mul]
+    rw [h_coeff, Nat.add_mul (12 * k) 5 (k + 1), Nat.mul_add (12 * k) k 1, Nat.mul_one,
+        Nat.mul_add 5 k 1, Nat.mul_one, Nat.add_mul (12 * k) 8 (k + 1),
+        Nat.mul_add (12 * k) k 1, Nat.mul_one, Nat.mul_add 8 k 1, Nat.mul_one]
     omega
   rw [h1, h2]
 
-#print axioms erdosStrausMasterSplit
-#print axioms erdosStrausMod4Eq3
-#print axioms erdosStrausMod12Eq5
 
