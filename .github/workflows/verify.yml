@@ -12,10 +12,7 @@ jobs:
       - name: Test du moteur Python universel V_r
         run: python3 src/vr_universal_engine.py
 
-      - name: Installation de Lean 4
+      - name: Installation et vérification Lean 4
         run: |
           curl https://githubusercontent.com -sSf | sh -s -- -y --default-toolchain leanprover/lean4:stable
-          echo "$HOME/.elan/bin" >> $GITHUB_PATH
-
-      - name: Vérification de PrimorialTowerDraft.lean
-        run: lean proofs/PrimorialTowerDraft.lean
+          ~/.elan/bin/lean proofs/PrimorialTowerDraft.lean
