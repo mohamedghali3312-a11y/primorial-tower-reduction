@@ -7,9 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Test Python V_r
+
+      - name: Test du moteur Python universel V_r
         run: python3 src/vr_universal_engine.py
-      - name: Test Lean 4
-        uses: leanprover/lean-action@v1
-        with:
-          build-args: proofs/PrimorialTowerDraft.lean
+
+      - name: Installation directe de Lean 4 et vérification
+        run: |
+          wget -q https://github.com
+          tar --zstd -xf lean-4.14.0-linux.tar.zst
+          ./lean-4.14.0-linux/bin/lean proofs/PrimorialTowerDraft.lean
