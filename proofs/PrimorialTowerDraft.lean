@@ -12,6 +12,11 @@ def primorialTower (p : Nat → Nat) : Nat → Nat
   | 0 => 2
   | r + 1 => primorialTower p r * p (r + 1)
 
+-- Définition autonome de la factorielle n!
+def fact : Nat → Nat
+  | 0 => 1
+  | n + 1 => (n + 1) * fact n
+
 -- Démonstration 1 : Symétrie miroir sur le socle V
 theorem mirrorWheelSym (V r : Nat) (h1 : r ≤ V) (h2 : Nat.gcd r V = 1) :
     Nat.gcd (V - r) V = 1 := by
@@ -68,28 +73,27 @@ theorem erdosStrausEven (k : Nat) :
     4 * x * y * z = n * (y * z + x * z + x * y) := by
   intro n x y z
   dsimp only [n, x, y, z]
-  calc 4 * k * (2 * k) * (2 * k)
-    _ = 16 * (k * k * k) := by
-        rw [Nat.mul_assoc 4 k, Nat.mul_comm k (2 * k), ← Nat.mul_assoc 4 2,
-            Nat.mul_assoc 8 k, Nat.mul_assoc 8 (k * k), Nat.mul_comm (k * k) (2 * k)]
-        omega
-    _ = (2 * k) * (2 * k * (2 * k) + k * (2 * k) + k * (2 * k)) := by
-        have h1 : 2 * k * (2 * k) = 4 * (k * k) := by
-          rw [Nat.mul_assoc 2 k, Nat.mul_comm k (2 * k), ← Nat.mul_assoc 2 2]
-          omega
-        have h2 : k * (2 * k) = 2 * (k * k) := by
-          rw [Nat.mul_comm k (2 * k), Nat.mul_assoc 2 k k]
-        rw [h1, h2]
-        have h3 : 4 * (k * k) + 2 * (k * k) + 2 * (k * k) = 8 * (k * k) := by omega
-        rw [h3, Nat.mul_assoc 2 k, Nat.mul_comm k (8 * (k * k)), ← Nat.mul_assoc 2 8,
-            Nat.mul_assoc 16 (k * k) k]
-        omega
+  have h1 : 2 * k * (2 * k) = 4 * (k * k) := by
+    rw [Nat.mul_assoc 2 k, Nat.mul_comm k (2 * k), ← Nat.mul_assoc 2 2, Nat.mul_assoc]
+  have h2 : k * (2 * k) = 2 * (k * k) := by
+    rw [Nat.mul_comm k (2 * k), Nat.mul_assoc 2 k k]
+  rw [h1, h2]
+  have h3 : 4 * (k * k) + 2 * (k * k) + 2 * (k * k) = 8 * (k * k) := by omega
+  rw [h3]
+  have h_lhs : 4 * k * (2 * k) * (2 * k) = 16 * (k * (k * k)) := by
+    calc 4 * k * (2 * k) * (2 * k)
+      _ = (4 * k) * (4 * (k * k)) := by rw [Nat.mul_assoc (4 * k), h1]
+      _ = 16 * (k * (k * k)) := by
+          rw [Nat.mul_assoc 4 k, Nat.mul_comm k (4 * (k * k)), ← Nat.mul_assoc 4 4, Nat.mul_assoc]
+  have h_rhs : 2 * k * (8 * (k * k)) = 16 * (k * (k * k)) := by
+    rw [Nat.mul_assoc 2 k, Nat.mul_comm k (8 * (k * k)), ← Nat.mul_assoc 2 8, Nat.mul_assoc]
+  rw [h_lhs, h_rhs]
 
 -- Démonstration 6 : Obstruction universelle de Brocard-Ramanujan sur V_r
 theorem universalBrocardObstruction (p : Nat → Nat) (r n m : Nat)
-    (h_div : primorialTower p r ∣ Nat.factorial n)
-    (h_brocard : Nat.factorial n + 1 = m * m) :
+    (h_div : primorialTower p r ∣ fact n)
+    (h_brocard : fact n + 1 = m * m) :
     primorialTower p r ∣ (m * m - 1) := by
-  have h_sub : m * m - 1 = Nat.factorial n := by omega
+  have h_sub : m * m - 1 = fact n := by omega
   rw [h_sub]
   exact h_div
