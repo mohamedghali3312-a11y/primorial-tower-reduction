@@ -242,9 +242,10 @@ theorem erdosStrausMasterSplit (n x M : Nat) (h_cond : 4 * x * M = (M + x) * n) 
     have h3 : x * (M + 1) = (M + 1) * x := by ac_rfl
     rw [h2, h3, ← Nat.mul_add, ← Nat.mul_add]
   have h_mid : M * (M + 1) + x * M + x = (M + x) * (M + 1) := by
-    rw [Nat.mul_add, Nat.mul_one, Nat.add_mul, Nat.mul_add, Nat.one_mul]
-    have hc : x * M = M * x := by ac_rfl
-    rw [hc]
+    have h1 : M * (M + 1) = M * M + M := by rw [Nat.mul_add, Nat.mul_one]
+    have h2 : (M + x) * (M + 1) = (M * M + M) + (x * M + x) := by
+      rw [Nat.add_mul, Nat.mul_add, Nat.mul_one, Nat.mul_add, Nat.mul_one]
+    rw [h1, h2]
     omega
   rw [h_inner, h_mid]
   have h_lhs : 4 * x * (M + 1) * (M * (M + 1)) = (4 * x * M) * ((M + 1) * (M + 1)) := by
@@ -286,5 +287,9 @@ theorem erdosStrausMod12Eq5 (k : Nat) :
         Nat.mul_add (12 * k) k 1, Nat.mul_one, Nat.mul_add 8 k 1, Nat.mul_one]
     omega
   rw [h1, h2]
+
+#print axioms erdosStrausMasterSplit
+#print axioms erdosStrausMod4Eq3
+#print axioms erdosStrausMod12Eq5
 
 
