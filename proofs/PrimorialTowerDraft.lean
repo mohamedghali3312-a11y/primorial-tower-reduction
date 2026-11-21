@@ -526,3 +526,44 @@ theorem mersenneFactorEulerForm (p q : Nat) (hp : 0 < p)
 
 #print axioms sophieGermainObstructionMod3
 #print axioms mersenneFactorEulerForm
+-- ============================================================================
+-- CONJECTURE DE LEGENDRE & CONJECTURE D'OPPERMANN (FENÊTRES QUADRATIQUES)
+-- ============================================================================
+
+-- 38. Longueur exacte de la fenêtre de Legendre : (n + 1)^2 - n^2 = 2 * n + 1
+theorem legendreWindowLength (n : Nat) :
+    (n + 1) * (n + 1) - n * n = 2 * n + 1 := by
+  have h : (n + 1) * (n + 1) = n * n + (2 * n + 1) := by
+    rw [Nat.add_mul, Nat.mul_add, Nat.mul_add, Nat.mul_one, Nat.one_mul]
+    omega
+  omega
+
+-- 39. Bipartition d'Oppermann de l'intervalle de Legendre :
+-- Le point médian n*(n + 1) découpe [n^2, (n + 1)^2] en deux sous-intervalles
+-- de longueurs exactes n et (n + 1).
+theorem oppermannSubIntervals (n : Nat) :
+    n * (n + 1) - n * n = n ∧ (n + 1) * (n + 1) - n * (n + 1) = n + 1 := by
+  have h1 : n * (n + 1) = n * n + n := by rw [Nat.mul_add, Nat.mul_one]
+  have h2 : (n + 1) * (n + 1) = n * (n + 1) + (n + 1) := by
+    rw [Nat.add_mul, Nat.one_mul]
+  constructor
+  · omega
+  · omega
+
+-- 40. Parité systématique du pivot d'Oppermann : 2 ∣ n * (n + 1)
+theorem oppermannPivotEven (n : Nat) :
+    (n * (n + 1)) % 2 = 0 := by
+  have h_mod : n % 2 = 0 ∨ n % 2 = 1 := by omega
+  rcases h_mod with h0 | h1
+  · have hq : n = 2 * (n / 2) := by omega
+    rw [hq, Nat.mul_assoc]
+    omega
+  · have hq : n + 1 = 2 * ((n + 1) / 2) := by omega
+    rw [hq]
+    have ha : n * (2 * ((n + 1) / 2)) = 2 * (n * ((n + 1) / 2)) := by ac_rfl
+    rw [ha]
+    omega
+
+#print axioms legendreWindowLength
+#print axioms oppermannSubIntervals
+#print axioms oppermannPivotEven
