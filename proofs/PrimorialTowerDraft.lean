@@ -460,3 +460,43 @@ theorem noTwoPrimeGiuga (p q : Nat) (hp : 1 < p) (hpq : p < q) :
 
 #print axioms giugaCofactorCondition
 #print axioms noTwoPrimeGiuga
+-- ============================================================================
+-- NOMBRES PARFAITS IMPAIRS & CRITÈRE D'EULER (N = p^α * m^2)
+-- ============================================================================
+
+-- 34. Congruence du carré d'un entier impair : (2k + 1)^2 ≡ 1 (mod 8)
+theorem oddSquareMod8 (k : Nat) :
+    ((2 * k + 1) * (2 * k + 1)) % 8 = 1 := by
+  have h1 : (2 * k + 1) * (2 * k + 1) = 4 * (k * (k + 1)) + 1 := by
+    rw [Nat.add_mul, Nat.mul_add, Nat.mul_add, Nat.mul_one, Nat.one_mul, Nat.mul_add, Nat.mul_one]
+    have hc : 2 * k * (2 * k) = 4 * (k * k) := by ac_rfl
+    rw [hc]
+    omega
+  rw [h1]
+  -- Parmi k et (k + 1), l'un est pair, donc 8 ∣ 4 * (k * (k + 1))
+  have h_even : (k * (k + 1)) % 2 = 0 := by
+    have hk : k % 2 = 0 ∨ k % 2 = 1 := by omega
+    rcases hk with h0 | h1_mod
+    · have hq : k = 2 * (k / 2) := by omega
+      rw [hq, Nat.mul_assoc]
+      omega
+    · have hq : k + 1 = 2 * ((k + 1) / 2) := by omega
+      rw [hq]
+      have ha : k * (2 * ((k + 1) / 2)) = 2 * (k * ((k + 1) / 2)) := by ac_rfl
+      rw [ha]
+      omega
+  have h8 : (4 * (k * (k + 1))) % 8 = 0 := by omega
+  omega
+
+-- 35. Obstruction d'Euler sur les nombres parfaits impairs :
+-- Si un entier N a la forme d'Euler N = p_pow * m^2 avec p_pow ≡ 1 (mod 4) et m impair,
+-- alors N ≡ 1 (mod 4) : aucun entier N ≡ 3 (mod 4) ne peut jamais être parfait impair !
+theorem oddPerfectEulerMod4Obstruction (p_pow k : Nat)
+    (hp : p_pow % 4 = 1) :
+    (p_pow * ((2 * k + 1) * (2 * k + 1))) % 4 = 1 := by
+  have hm8 : ((2 * k + 1) * (2 * k + 1)) % 8 = 1 := oddSquareMod8 k
+  have hm4 : ((2 * k + 1) * (2 * k + 1)) % 4 = 1 := by omega
+  rw [Nat.mul_mod, hp, hm4]
+
+#print axioms oddSquareMod8
+#print axioms oddPerfectEulerMod4Obstruction
