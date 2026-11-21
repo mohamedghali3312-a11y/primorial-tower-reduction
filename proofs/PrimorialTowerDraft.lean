@@ -500,3 +500,29 @@ theorem oddPerfectEulerMod4Obstruction (p_pow k : Nat)
 
 #print axioms oddSquareMod8
 #print axioms oddPerfectEulerMod4Obstruction
+-- ============================================================================
+-- NOMBRES DE SOPHIE GERMAIN & NOMBRES DE MERSENNE (M_p = 2^p - 1)
+-- ============================================================================
+
+-- 36. Obstruction modulaire sur les nombres premiers de Sophie Germain :
+-- Si p ≡ 1 (mod 3), alors 3 ∣ (2 * p + 1). Ainsi, tout premier de Sophie Germain
+-- p > 3 appartient obligatoirement à la classe p ≡ 2 (mod 3).
+theorem sophieGermainObstructionMod3 (p : Nat) (hp : p % 3 = 1) :
+    (2 * p + 1) % 3 = 0 := by
+  omega
+
+-- 37. Structure d'Euler des facteurs de Mersenne (q = 2 * k * p + 1) :
+-- Tout facteur q vérifiant q % (2 * p) = 1 (pour p > 0) s'écrit exactement
+-- sous la forme q = 2 * k * p + 1.
+theorem mersenneFactorEulerForm (p q : Nat) (hp : 0 < p)
+    (h_mod : q % (2 * p) = 1) :
+    ∃ k : Nat, q = 2 * k * p + 1 := by
+  refine ⟨q / (2 * p), ?_⟩
+  have h_div : 2 * p * (q / (2 * p)) + q % (2 * p) = q := Nat.div_add_mod q (2 * p)
+  rw [h_mod] at h_div
+  have h_comm : 2 * p * (q / (2 * p)) = 2 * (q / (2 * p)) * p := by ac_rfl
+  rw [h_comm] at h_div
+  omega
+
+#print axioms sophieGermainObstructionMod3
+#print axioms mersenneFactorEulerForm
