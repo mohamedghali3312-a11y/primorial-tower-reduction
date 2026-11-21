@@ -1,23 +1,11 @@
-/-
-  ==============================================================================
-  PROJET : PRIMORIAL-TOWER-REDUCTION — DÉMONSTRATIONS CONSTRUCTIVES FORMELLES
-  Auteur : Mohamed Ghali (ORCID : 0009-0006-3364-5341)
-  Note   : En Lean 4 pur (sans Mathlib), la déclaration formelle utilise le
-           mot-clé syntaxique `theorem` pour désigner ces lemmes de réduction.
-  ==============================================================================
--/
-
--- Définition de la tour primorielle V_0 = 2, V_{r+1} = V_r * p_{r+1}
 def primorialTower (p : Nat → Nat) : Nat → Nat
   | 0 => 2
   | r + 1 => primorialTower p r * p (r + 1)
 
--- Définition autonome de la factorielle n!
 def fact : Nat → Nat
   | 0 => 1
   | n + 1 => (n + 1) * fact n
 
--- Démonstration 1 : Symétrie miroir sur le socle V
 theorem mirrorWheelSym (V r : Nat) (h1 : r ≤ V) (h2 : Nat.gcd r V = 1) :
     Nat.gcd (V - r) V = 1 := by
   apply Nat.dvd_antisymm _ (Nat.one_dvd _)
@@ -29,7 +17,6 @@ theorem mirrorWheelSym (V r : Nat) (h1 : r ≤ V) (h2 : Nat.gcd r V = 1) :
   rw [Nat.mul_sub_left_distrib]
   omega
 
--- Démonstration 2 : Divisibilité monotone de la tour (∀ r ≤ s, V_r ∣ V_s)
 theorem primorialTower_dvd_of_le (p : Nat → Nat) {r s : Nat} (h : r ≤ s) :
     primorialTower p r ∣ primorialTower p s := by
   induction s with
@@ -46,7 +33,6 @@ theorem primorialTower_dvd_of_le (p : Nat → Nat) {r s : Nat} (h : r ≤ s) :
       dsimp only [primorialTower]
       exact Nat.dvd_mul_of_dvd_left h_div_k (p (k + 1))
 
--- Démonstration 3 : Projection universelle de coprimalité sur tout rang r ≤ s
 theorem universalWheelProjection (p : Nat → Nat) {r s : Nat} (h : r ≤ s) (x : Nat)
     (h_coprime_s : Nat.gcd x (primorialTower p s) = 1) :
     Nat.gcd x (primorialTower p r) = 1 := by
@@ -56,7 +42,6 @@ theorem universalWheelProjection (p : Nat → Nat) {r s : Nat} (h : r ≤ s) (x 
   apply Nat.dvd_gcd (Nat.gcd_dvd_left x _)
   exact Nat.dvd_trans (Nat.gcd_dvd_right x _) h_div
 
--- Démonstration 4 : Invariance universelle par translation sur V_r
 theorem universalWheelShift (p : Nat → Nat) (r x m : Nat)
     (h_adm : Nat.gcd x (primorialTower p r) = 1) :
     Nat.gcd (x + m * primorialTower p r) (primorialTower p r) = 1 := by
@@ -64,15 +49,8 @@ theorem universalWheelShift (p : Nat → Nat) (r x m : Nat)
     rw [Nat.mul_comm m _]
   rw [h, Nat.gcd_add_mul_right_right, h_adm]
 
--- Démonstration 5 : Réduction modulaire d'Erdős-Straus (cas pair n = 2k)
 theorem erdosStrausEven (k : Nat) :
-    let n := 2 * k
-    let x := k
-    let y := 2 * k
-    let z := 2 * k
-    4 * x * y * z = n * (y * z + x * z + x * y) := by
-  intro n x y z
-  dsimp only [n, x, y, z]
+    4 * k * (2 * k) * (2 * k) = (2 * k) * (2 * k * (2 * k) + k * (2 * k) + k * (2 * k)) := by
   have h1 : 2 * k * (2 * k) = 4 * (k * k) := by
     calc 2 * k * (2 * k) = (2 * 2) * (k * k) := by ac_rfl
     _ = 4 * (k * k) := rfl
@@ -84,12 +62,7 @@ theorem erdosStrausEven (k : Nat) :
     _ = (4 * 2 * 2) * (k * k * k) := by ac_rfl
     _ = (2 * 8) * (k * k * k) := rfl
     _ = 2 * k * (8 * (k * k)) := by ac_rfl
-    rw [Nat.mul_assoc 4 k, Nat.mul_comm k (4 * (k * k)), ← Nat.mul_assoc 4 4, Nat.mul_assoc]
-  have h_rhs : 2 * k * (8 * (k * k)) = 16 * (k * (k * k)) := by
-    rw [Nat.mul_assoc 2 k, Nat.mul_comm k (8 * (k * k)), ← Nat.mul_assoc 2 8, Nat.mul_assoc]
-  rw [h_lhs, h_rhs]
 
--- Démonstration 6 : Obstruction universelle de Brocard-Ramanujan sur V_r
 theorem universalBrocardObstruction (p : Nat → Nat) (r n m : Nat)
     (h_div : primorialTower p r ∣ fact n)
     (h_brocard : fact n + 1 = m * m) :
