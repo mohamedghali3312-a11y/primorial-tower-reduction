@@ -1,0 +1,67 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemme de réduction}
+\newtheorem{demonstration}{Démonstration constructive}
+
+\title{\textbf{Réduction Modulaire Universelle sur les Tours Primorielles $V_r$} \\
+\large Démonstrations Constructives Certifiées en Lean~4 Pur et Moteur en Mémoire Bornée $O(1)$}
+\author{Mohamed Ghali \\ \small ORCID : 0009-0006-3364-5341}
+\date{Novembre 2026 — Version 1.0.0}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Ce document présente le cadre formel et algorithmique du projet \textbf{Primorial-Tower-Reduction}, qui généralise l'arithmétique des roues primorielles à toute tour récursive $V_0 = 2$, $V_{r+1} = V_r \cdot p_{r+1}$ ($r \in \mathbb{N}$). En projetant des systèmes d'équations diophantiennes et des familles de polynômes à coefficients entiers sur les groupes des unités $(\mathbb{Z}/V_r\mathbb{Z})^\times$, on établit des invariants de translation et d'obstruction modulaire opérant en mémoire bornée $O(1)$. L'intégralité des \textbf{22 démonstrations constructives} présentées est vérifiée mécaniquement par le compilateur \textbf{Lean~4 pur} (sans dépendance externe) et accompagnée d'un moteur d'exploration numérique en Python.
+\end{abstract}
+
+\section{Architecture de la Tour Primorielle Universelle $V_r$}
+
+Soit $(p_k)_{k \ge 0}$ la suite croissante des nombres premiers ($p_0 = 2, p_1 = 3, \dots$). On définit la tour primorielle par récurrence :
+\begin{equation}
+V_0 = 2, \qquad V_{r+1} = V_r \cdot p_{r+1} \quad (\forall r \in \mathbb{N}).
+\end{equation}
+
+\begin{demonstration}[Invariance, Projection et Translation sur $V_r$]
+Pour tous rangs $0 \le r \le s$ et tout entier $x \in \mathbb{N}$ :
+\begin{enumerate}
+    \item \textbf{Divisibilité monotone :} $V_r \mid V_s$ (\texttt{primorialTower\_dvd\_of\_le}).
+    \item \textbf{Projection universelle :} Si $\gcd(x, V_s) = 1$, alors $\gcd(x, V_r) = 1$ (\texttt{universalWheelProjection}).
+    \item \textbf{Symétrie miroir et translation :} Si $x \le V_r$ et $\gcd(x, V_r) = 1$, alors $\gcd(V_r - x, V_r) = 1$ (\texttt{mirrorWheelSym}) et $\gcd(x + m V_r, V_r) = 1$ pour tout $m \in \mathbb{N}$ (\texttt{universalWheelShift}).
+\end{enumerate}
+\end{demonstration}
+
+Au rang $r = 5$ ($V_5 = 30\,030$, $\varphi(V_5) = 5\,760$), la table des résidus occupe $11,25\text{ Ko}$ en mémoire cache L1 et élimine $80,820\,\%$ des candidats unitaires avant tout test de primalité.
+
+\section{Synthèse des 22 Démonstrations Constructives Certifiées}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{3.5cm} p{5.2cm} p{5.5cm}}
+\toprule
+\textbf{Domaine / Conjecture} & \textbf{Identifiants Lean~4} & \textbf{Propriété de réduction certifiée} \\
+\midrule
+\textbf{Tour Universelle $V_r$} & \texttt{mirrorWheelSym}, \texttt{primorialTower\_dvd\_of\_le}, \texttt{universalWheelProjection}, \texttt{gcd\_shift\_general}, \texttt{universalWheelShift} & Symétrie miroir, divisibilité de tour $V_r \mid V_s$ et invariance par décalage modulaire. \\
+\textbf{Cryptographie NTT} & \texttt{nttProthStructure}, \texttt{prothKRedIdentity} & Structure multiplicative des corps de Proth ($2^n K + 1$) et réduction paresseuse K-RED. \\
+\textbf{Goldbach \& Lemoine} & \texttt{goldbachParamId}, \texttt{goldbachSecondComponentCoprime}, \texttt{goldbachInvolution}, \texttt{lemoineParamId}, \texttt{lemoineSecondComponentCoprime} & Identités paramétriques, involution $Q \mapsto N - Q$ et préservation de coprimalité sur $N = p+q$ et $N = p+2q$. \\
+\textbf{Bateman--Horn} & \texttt{batemanHornLinearStep}, \texttt{batemanHornQuadraticStep} & Invariance modulaire des constellations affines ($X+2, 2X+1$) et quadratiques ($X^2+1$). \\
+\textbf{Cunningham \& Robin} & \texttt{cunninghamLinkFormula}, \texttt{cunninghamModularObstruction}, \texttt{abundanceFactorStrictGrowth} & Loi de troncature ($q \mid A \implies q \mid p_{q-2}$) et croissance géométrique $p^a(p-1) < p^{a+1}-1$. \\
+\textbf{Erdős--Straus} & \texttt{erdosStrausEven} & Résolution diophantienne exacte $4xyz = n(yz+xz+xy)$ pour la classe paire ($n = 2k$). \\
+\textbf{Brocard, Wieferich \& Firoozbakht} & \texttt{dvd\_fact\_of\_le}, \texttt{universalBrocardObstruction}, \texttt{wieferichImpliesFermat}, \texttt{firoozbakhtSmallerGapMonotone}, \texttt{firoozbakhtZeroGap} & Obstruction $V_r \mid (m^2-1)$ pour $n!+1=m^2$, hiérarchie mod $x^2$ et bornes entières sur les écarts records. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Note Méthodologique}
+Les réductions modulaires établies dans ce travail restreignent l'espace de recherche numérique tout en garantissant formellement qu'aucune solution première n'est écartée par les filtres. Elles constituent un outil de certification algorithmique et d'exploration expérimentale sans prétendre à une démonstration asymptotique des conjectures ouvertes associées.
+
+\end{document}
