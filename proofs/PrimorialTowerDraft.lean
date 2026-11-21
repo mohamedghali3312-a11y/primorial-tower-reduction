@@ -408,4 +408,32 @@ theorem collatzDescentMod16Eq3 (k : Nat) :
 #print axioms collatzDescentMod2Eq0
 #print axioms collatzDescentMod4Eq1
 #print axioms collatzDescentMod16Eq3
+-- ============================================================================
+-- NOMBRES DE CARMICHAEL & CRITÈRE DE KORSELT SUR LES PRODUITS SANS CARRÉ
+-- ============================================================================
+
+-- 30. Identité fondamentale de Korselt : p*q - 1 = p*(q - 1) + (p - 1)
+theorem korseltTwoPrimeIdentity (p q : Nat) (hp : 1 ≤ p) (hq : 1 ≤ q) :
+    p * q - 1 = p * (q - 1) + (p - 1) := by
+  have hq_eq : q = (q - 1) + 1 := by omega
+  have hp_eq : p = (p - 1) + 1 := by omega
+  have h1 : p * q = p * ((q - 1) + 1) := by rw [← hq_eq]
+  rw [h1, Nat.mul_add, Nat.mul_one]
+  omega
+
+-- 31. Théorème d'impossibilité des nombres de Carmichael semi-premiers (n = p * q) :
+-- Si 1 < p < q, alors (q - 1) ne peut JAMAIS diviser (p * q - 1).
+-- Tout nombre de Carmichael possède donc au moins 3 facteurs premiers distincts.
+theorem noTwoPrimeCarmichael (p q : Nat) (hp : 1 < p) (hpq : p < q) :
+    ¬ ((q - 1) ∣ (p * q - 1)) := by
+  intro h_dvd
+  rw [korseltTwoPrimeIdentity p q (by omega) (by omega)] at h_dvd
+  have h_mod : (p * (q - 1) + (p - 1)) % (q - 1) = 0 := Nat.mod_eq_zero_of_dvd h_dvd
+  have h_reduce : (p * (q - 1) + (p - 1)) % (q - 1) = (p - 1) % (q - 1) := by
+    rw [Nat.add_comm, Nat.add_mul_mod_self_right]
+  rw [h_reduce, Nat.mod_eq_of_lt (by omega)] at h_mod
+  omega
+
+#print axioms korseltTwoPrimeIdentity
+#print axioms noTwoPrimeCarmichael
 
