@@ -1,0 +1,21 @@
+name: Vérification Formelle & Numérique
+
+on: [push, pull_request]
+
+jobs:
+  verify-all:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du dépôt
+        uses: actions/checkout@v4
+
+      - name: Test du moteur Python universel V_r
+        run: python3 src/vr_universal_engine.py
+
+      - name: Installation de Lean 4
+        run: |
+          curl https://githubusercontent.com -sSf | sh -s -- -y --default-toolchain leanprover/lean4:stable
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Vérification de PrimorialTowerDraft.lean
+        run: lean proofs/PrimorialTowerDraft.lean
