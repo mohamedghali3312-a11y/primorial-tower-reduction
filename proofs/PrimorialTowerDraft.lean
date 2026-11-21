@@ -174,7 +174,6 @@ theorem cunninghamModularObstruction (A q : Nat) (hq : 2 ≤ q)
   rcases h_fermat with ⟨k2, hk2⟩
   refine ⟨2 ^ (q - 1) * k1 + k2, ?_⟩
   rw [hk1, hk2, Nat.mul_add, Nat.mul_left_comm]
-
 -- 16. Critère de Guy Robin : croissance géométrique stricte du facteur d'abondance
 theorem abundanceFactorStrictGrowth (p a : Nat) (hp : 2 ≤ p) (ha : 1 ≤ a) :
     p ^ a * (p - 1) < p ^ (a + 1) - 1 := by
@@ -185,10 +184,10 @@ theorem abundanceFactorStrictGrowth (p a : Nat) (hp : 2 ≤ p) (ha : 1 ≤ a) :
     omega
   have h_diff : p ^ a * p = p ^ a * (p - 1) + p ^ a := by
     have h_eq : p = (p - 1) + 1 := by omega
-    conv_lhs => rw [h_eq]
-    rw [Nat.mul_add, Nat.mul_one]
+    calc p ^ a * p = p ^ a * ((p - 1) + 1) := by rw [← h_eq]
+    _ = p ^ a * (p - 1) + p ^ a := by rw [Nat.mul_add, Nat.mul_one]
+  rw [h_pow, h_diff]
   omega
-
 -- 17. Conjecture de Goldbach : symétrie involutive Q ↦ N - Q
 theorem goldbachInvolution (N Q : Nat) (h : Q ≤ N) :
     N - (N - Q) = Q := by
@@ -199,7 +198,6 @@ theorem lemoineParamId (N S q0 m : Nat)
     (h_bound : 2 * (q0 + m * S) ≤ N) :
     (N - 2 * (q0 + m * S)) + 2 * (q0 + m * S) = N := by
   omega
-
 -- 19. Factorielle : divisibilité universelle k ∣ fact n pour 1 ≤ k ≤ n
 theorem dvd_fact_of_le (k n : Nat) (hk1 : 1 ≤ k) (hkn : k ≤ n) :
     k ∣ fact n := by
@@ -211,8 +209,9 @@ theorem dvd_fact_of_le (k n : Nat) (hk1 : 1 ≤ k) (hkn : k ≤ n) :
     · rw [h_eq]
       exact Nat.dvd_mul_right (m + 1) (fact m)
     · have hkm : k ≤ m := by omega
-      exact Nat.dvd_mul_of_dvd_right (ih hkm) (m + 1)
-
+      rcases ih hkm with ⟨c, hc⟩
+      refine ⟨(m + 1) * c, ?_⟩
+      rw [hc, ← Nat.mul_assoc]
 -- 20. Nombres premiers de Wieferich : hiérarchie mod x^2 => mod x
 theorem wieferichImpliesFermat (x k : Nat)
     (h_wief : k % (x * x) = 1) :
