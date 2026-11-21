@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "Si vous utilisez ce dépôt, les démonstrations Lean 4 ou le moteur Python dans vos travaux, veuillez citer ce projet comme suit :"
+type: software
+title: "Primorial-Tower-Reduction : Réduction Modulaire Universelle sur les Tours V_r"
+version: 1.0.0
+date-released: 2026-11-21
+license: MIT
+authors:
+  - family-names: "Ghali"
+    given-names: "Mohamed"
+keywords:
+  - "primorial wheels"
+  - "lean4"
+  - "formal verification"
+  - "number theory"
+  - "post-quantum cryptography"
+  - "goldbach conjecture"
+  - "erdos-straus conjecture"
+abstract: "Cadre algébrique et algorithmique en mémoire bornée O(1) généralisant le filtrage modulaire sur les tours primorielles V_r, accompagné de 22 démonstrations constructives certifiées en Lean 4 pur et d'un moteur d'exploration numérique en Python."
