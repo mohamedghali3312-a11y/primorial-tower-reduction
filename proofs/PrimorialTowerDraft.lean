@@ -123,17 +123,17 @@ theorem erdosStrausEven (k : Nat) :
     4 * k * (2 * k) * (2 * k) = (2 * k) * (2 * k * (2 * k) + k * (2 * k) + k * (2 * k)) := by
   have h1 : 2 * k * (2 * k) = 4 * (k * k) := by
     have h_eq : 2 * k * (2 * k) = (2 * 2) * (k * k) := by ac_rfl
-    rw [h_eq]; rfl
+    rw [h_eq]
   have h2 : k * (2 * k) = 2 * (k * k) := by ac_rfl
   rw [h1, h2]
   have h3 : 4 * (k * k) + 2 * (k * k) + 2 * (k * k) = 8 * (k * k) := by omega
   rw [h3]
   have h_lhs : 4 * k * (2 * k) * (2 * k) = 16 * (k * k * k) := by
     have h_eq : 4 * k * (2 * k) * (2 * k) = (4 * 2 * 2) * (k * k * k) := by ac_rfl
-    rw [h_eq]; rfl
+    rw [h_eq]
   have h_rhs : 2 * k * (8 * (k * k)) = 16 * (k * k * k) := by
     have h_eq : 2 * k * (8 * (k * k)) = (2 * 8) * (k * k * k) := by ac_rfl
-    rw [h_eq]; rfl
+    rw [h_eq]
   rw [h_lhs, h_rhs]
 
 -- 12. Conjecture de Brocard-Ramanujan : obstruction universelle sur V_r
@@ -212,6 +212,7 @@ theorem dvd_fact_of_le (k n : Nat) (hk1 : 1 ≤ k) (hkn : k ≤ n) :
       rcases ih hkm with ⟨c, hc⟩
       refine ⟨(m + 1) * c, ?_⟩
       rw [hc, ← Nat.mul_assoc]
+      ac_rfl
 -- 20. Nombres premiers de Wieferich : hiérarchie mod x^2 => mod x
 theorem wieferichImpliesFermat (x k : Nat)
     (h_wief : k % (x * x) = 1) :
