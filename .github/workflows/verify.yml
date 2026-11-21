@@ -6,13 +6,10 @@ jobs:
   verify-all:
     runs-on: ubuntu-latest
     steps:
-      - name: Récupération du dépôt
-        uses: actions/checkout@v4
-
-      - name: Test du moteur Python universel V_r
+      - uses: actions/checkout@v4
+      - name: Test Python V_r
         run: python3 src/vr_universal_engine.py
-
-      - name: Installation et vérification Lean 4
-        run: |
-          curl https://githubusercontent.com -sSf | sh -s -- -y --default-toolchain leanprover/lean4:stable
-          ~/.elan/bin/lean proofs/PrimorialTowerDraft.lean
+      - name: Test Lean 4
+        uses: leanprover/lean-action@v1
+        with:
+          build-args: proofs/PrimorialTowerDraft.lean
