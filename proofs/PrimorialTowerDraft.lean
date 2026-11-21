@@ -29,9 +29,10 @@ theorem primorialTower_dvd_of_le (p : Nat → Nat) {r s : Nat} (h : r ≤ s) :
     · rw [h_eq]
       exact Nat.dvd_refl _
     · have hrk : r ≤ k := by omega
-      have h_div_k := ih hrk
+      rcases ih hrk with ⟨c, hc⟩
       dsimp only [primorialTower]
-      exact Nat.dvd_mul_of_dvd_left h_div_k (p (k + 1))
+      refine ⟨c * p (k + 1), ?_⟩
+      rw [hc, Nat.mul_assoc]
 
 theorem universalWheelProjection (p : Nat → Nat) {r s : Nat} (h : r ≤ s) (x : Nat)
     (h_coprime_s : Nat.gcd x (primorialTower p s) = 1) :
@@ -45,9 +46,14 @@ theorem universalWheelProjection (p : Nat → Nat) {r s : Nat} (h : r ≤ s) (x 
 theorem universalWheelShift (p : Nat → Nat) (r x m : Nat)
     (h_adm : Nat.gcd x (primorialTower p r) = 1) :
     Nat.gcd (x + m * primorialTower p r) (primorialTower p r) = 1 := by
-  have h : x + m * primorialTower p r = x + primorialTower p r * m := by
-    rw [Nat.mul_comm m _]
-  rw [h, Nat.gcd_add_mul_right_right, h_adm]
+  induction m with
+  | zero =>
+    simp [h_adm]
+  | succ k ih =>
+    have h_step : x + (k + 1) * primorialTower p r =
+        (x + k * primorialTower p r) + primorialTower p r := by
+      rw [Nat.succ_mul, ← Nat.add_assoc]
+    rw [h_step, Nat.gcd_add_self_right, ih]
 
 theorem erdosStrausEven (k : Nat) :
     4 * k * (2 * k) * (2 * k) = (2 * k) * (2 * k * (2 * k) + k * (2 * k) + k * (2 * k)) := by
