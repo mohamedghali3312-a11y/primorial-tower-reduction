@@ -230,3 +230,89 @@ theorem goldbachParamId (S K r m : Nat) (h : m ≤ K) :
 #print axioms abundanceFactorStrictGrowth
 #print axioms universalBrocardObstruction
 #print axioms firoozbakhtSmallerGapMonotone
+-- 23. Conjecture d'Erdős-Straus : classe impaire n ≡ 3 (mod 4) (n = 4k + 3)
+-- Couvre 25 % supplémentaires des entiers (75 % au total avec n = 2k).
+theorem erdosStrausMod4Eq3 (k : Nat) :
+    let n := 4 * k + 3
+    let x := k + 1
+    let M := n * x
+    let y := M + 1
+    let z := M * (M + 1)
+    4 * x * y * z = n * (y * z + x * z + x * y) := by
+  dsimp only
+  set n := 4 * k + 3
+  set x := k + 1
+  set M := n * x
+  have h_4x : 4 * x = n + 1 := by omega
+  have h_inner : (M + 1) * (M * (M + 1)) + x * (M * (M + 1)) + x * (M + 1) =
+      (M + 1) * (M * (M + 1) + x * M + x) := by
+    have h2 : x * (M * (M + 1)) = (M + 1) * (x * M) := by ac_rfl
+    have h3 : x * (M + 1) = (M + 1) * x := by ac_rfl
+    rw [h2, h3, ← Nat.mul_add, ← Nat.mul_add]
+  have h_mid : M * (M + 1) + x * M + x = (M + x) * (M + 1) := by
+    rw [Nat.mul_add, Nat.mul_one, Nat.add_mul, Nat.mul_add, Nat.one_mul]
+    have hc : x * M = M * x := by ac_rfl
+    rw [hc]
+    omega
+  have h_4xM : (4 * x) * M = (M + x) * n := by
+    rw [h_4x, Nat.add_mul, Nat.one_mul]
+    have hM : M = n * x := rfl
+    have hc1 : n * M = M * n := by ac_rfl
+    have hc2 : M = x * n := by rw [hM]; ac_rfl
+    rw [hc1, hc2, Nat.add_mul]
+  rw [h_inner, h_mid]
+  have h_lhs : 4 * x * (M + 1) * (M * (M + 1)) = ((4 * x) * M) * ((M + 1) * (M + 1)) := by
+    ac_rfl
+  have h_rhs : n * ((M + 1) * ((M + x) * (M + 1))) = ((M + x) * n) * ((M + 1) * (M + 1)) := by
+    ac_rfl
+  rw [h_lhs, h_rhs, h_4xM]
+
+-- 24. Conjecture d'Erdős-Straus : sous-classe n ≡ 5 (mod 24) (n = 24k + 5)
+-- Ici 2k + 2 = 6k + 2 et 8(3k) + 5 = 24k + 5 = 3(8k + 1) + 2 ; prenons n = 24k + 13
+-- où x = 6k + 4 = 2(3k + 2) et n = 3(8k + 4) + 1 : voyons le cas n = 24k + 21 = 3(8k + 7)
+-- et le cas général où 3 ∣ (n + 1) : n = 12k + 5 => x = 3k + 2, 4x - n = 3, et 3 ∣ (3k + 3) !
+theorem erdosStrausMod12Eq5 (k : Nat) :
+    let n := 12 * k + 5
+    let x := 3 * k + 2
+    let M := (12 * k + 5) * (k + 1)
+    let y := M + 1
+    let z := M * (M + 1)
+    4 * x * y * z = n * (y * z + x * z + x * y) := by
+  dsimp only
+  set n := 12 * k + 5
+  set x := 3 * k + 2
+  set M := n * (k + 1)
+  have h_x3 : x = 3 * (k + 1) - 1 := by omega
+  have h_4x : 4 * x = n + 3 := by omega
+  have h_inner : (M + 1) * (M * (M + 1)) + x * (M * (M + 1)) + x * (M + 1) =
+      (M + 1) * (M * (M + 1) + x * M + x) := by
+    have h2 : x * (M * (M + 1)) = (M + 1) * (x * M) := by ac_rfl
+    have h3 : x * (M + 1) = (M + 1) * x := by ac_rfl
+    rw [h2, h3, ← Nat.mul_add, ← Nat.mul_add]
+  have h_mid : M * (M + 1) + x * M + x = (M + x) * (M + 1) := by
+    rw [Nat.mul_add, Nat.mul_one, Nat.add_mul, Nat.mul_add, Nat.one_mul]
+    have hc : x * M = M * x := by ac_rfl
+    rw [hc]
+    omega
+  have h_key : (4 * x) * M = (M + x) * n := by
+    have hM : M = n * (k + 1) := rfl
+    have h_lhs_eq : (4 * x) * M = (4 * x * (k + 1)) * n := by
+      rw [hM]; ac_rfl
+    have h_rhs_eq : (M + x) * n = (n * (k + 1) + x) * n := by rw [hM]
+    have h_coeff : 4 * x * (k + 1) = n * (k + 1) + x := by
+      have h1 : 4 * x * (k + 1) = (n + 3) * (k + 1) := by rw [h_4x]
+      rw [h1, Nat.add_mul]
+      have h3k : 3 * (k + 1) = x + 1 := by omega
+      rw [h3k]
+      omega
+    rw [h_lhs_eq, h_rhs_eq, h_coeff]
+  rw [h_inner, h_mid]
+  have h_lhs : 4 * x * (M + 1) * (M * (M + 1)) = ((4 * x) * M) * ((M + 1) * (M + 1)) := by
+    ac_rfl
+  have h_rhs : n * ((M + 1) * ((M + x) * (M + 1))) = ((M + x) * n) * ((M + 1) * (M + 1)) := by
+    ac_rfl
+  rw [h_lhs, h_rhs, h_key]
+
+#print axioms erdosStrausMod4Eq3
+#print axioms erdosStrausMod12Eq5
+
