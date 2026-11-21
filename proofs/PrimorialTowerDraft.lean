@@ -270,26 +270,23 @@ theorem erdosStrausMod4Eq3 (k : Nat) :
         Nat.mul_add (4 * k) k 1, Nat.mul_one, Nat.mul_add 4 k 1, Nat.mul_one]
     omega
   rw [h1, h2]
-
--- 24. Conjecture d'Erdős-Straus : classe impaire n ≡ 5 (mod 12) (n = 12k + 5)
-theorem erdosStrausMod12Eq5 (k : Nat) :
-    4 * (3 * k + 2) * ((12 * k + 5) * (k + 1) + 1) * (((12 * k + 5) * (k + 1)) * ((12 * k + 5) * (k + 1) + 1)) =
-    (12 * k + 5) * ((((12 * k + 5) * (k + 1) + 1) * (((12 * k + 5) * (k + 1)) * ((12 * k + 5) * (k + 1) + 1))) +
-    (3 * k + 2) * (((12 * k + 5) * (k + 1)) * ((12 * k + 5) * (k + 1) + 1)) +
-    (3 * k + 2) * ((12 * k + 5) * (k + 1) + 1)) := by
-  apply erdosStrausMasterSplit (12 * k + 5) (3 * k + 2) ((12 * k + 5) * (k + 1))
-  have h1 : 4 * (3 * k + 2) * ((12 * k + 5) * (k + 1)) =
-      (4 * (3 * k + 2) * (k + 1)) * (12 * k + 5) := by ac_rfl
-  have h_coeff : 4 * (3 * k + 2) = 12 * k + 8 := by omega
-  have h2 : (12 * k + 5) * (k + 1) + (3 * k + 2) = 4 * (3 * k + 2) * (k + 1) := by
-    rw [h_coeff, Nat.add_mul (12 * k) 5 (k + 1), Nat.mul_add (12 * k) k 1, Nat.mul_one,
-        Nat.mul_add 5 k 1, Nat.mul_one, Nat.add_mul (12 * k) 8 (k + 1),
-        Nat.mul_add (12 * k) k 1, Nat.mul_one, Nat.mul_add 8 k 1, Nat.mul_one]
-    omega
+-- 24. Conjecture d'Erdős-Straus : classe impaire n ≡ 9 (mod 12) (n = 12k + 9)
+theorem erdosStrausMod12Eq9 (k : Nat) :
+    4 * (3 * k + 3) * ((12 * k + 9) * (k + 1) + 1) * (((12 * k + 9) * (k + 1)) * ((12 * k + 9) * (k + 1) + 1)) =
+    (12 * k + 9) * ((((12 * k + 9) * (k + 1) + 1) * (((12 * k + 9) * (k + 1)) * ((12 * k + 9) * (k + 1) + 1))) +
+    (3 * k + 3) * (((12 * k + 9) * (k + 1)) * ((12 * k + 9) * (k + 1) + 1)) +
+    (3 * k + 3) * ((12 * k + 9) * (k + 1) + 1)) := by
+  apply erdosStrausMasterSplit (12 * k + 9) (3 * k + 3) ((12 * k + 9) * (k + 1))
+  have h1 : 4 * (3 * k + 3) * ((12 * k + 9) * (k + 1)) =
+      (4 * (3 * k + 3) * (k + 1)) * (12 * k + 9) := by ac_rfl
+  have h_3k3 : 3 * k + 3 = 3 * (k + 1) := by omega
+  have h_12k12 : 4 * (3 * k + 3) = 12 * (k + 1) := by omega
+  have h2 : (12 * k + 9) * (k + 1) + (3 * k + 3) = 4 * (3 * k + 3) * (k + 1) := by
+    rw [h_3k3, h_12k12, ← Nat.add_mul]
   rw [h1, h2]
 
 #print axioms erdosStrausMasterSplit
 #print axioms erdosStrausMod4Eq3
-#print axioms erdosStrausMod12Eq5
+#print axioms erdosStrausMod12Eq9
 
 
