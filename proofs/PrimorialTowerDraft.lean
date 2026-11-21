@@ -93,24 +93,18 @@ theorem batemanHornLinearStep (a b r0 m S : Nat)
 theorem batemanHornQuadraticStep (c r0 m S : Nat)
     (h_adm : Nat.gcd (r0 * r0 + c) S = 1) :
     Nat.gcd ((r0 + m * S) * (r0 + m * S) + c) S = 1 := by
+  have h1 : r0 * (m * S) = (r0 * m) * S := by ac_rfl
+  have h2 : (m * S) * r0 = (r0 * m) * S := by ac_rfl
+  have h3 : (m * S) * (m * S) = (m * m * S) * S := by ac_rfl
+  have h_two : 2 * r0 = r0 + r0 := by omega
+  have h4 : (2 * r0 * m) * S = (r0 * m) * S + (r0 * m) * S := by
+    rw [h_two, Nat.add_mul, Nat.add_mul]
   have h_expand : (r0 + m * S) * (r0 + m * S) + c =
       (r0 * r0 + c) + (2 * r0 * m + m * m * S) * S := by
-    have h1 : r0 * (m * S) = (r0 * m) * S := by ac_rfl
-    have h2 : (m * S) * r0 = (r0 * m) * S := by ac_rfl
-    have h3 : (m * S) * (m * S) = (m * m * S) * S := by ac_rfl
-    have h4 : (2 * r0 * m) * S = (r0 * m) * S + (r0 * m) * S := by
-      have h_two : 2 * r0 = r0 + r0 := by omega
-      rw [h_two, Nat.add_mul, Nat.add_mul]
-  calc (r0 + m * S) * (r0 + m * S) + c
-      _ = r0 * r0 + r0 * (m * S) + (m * S) * r0 + (m * S) * (m * S) + c := by
-          rw [Nat.add_mul, Nat.mul_add, Nat.mul_add]
-          omega
-      _ = (r0 * r0 + c) + (2 * r0 * m + m * m * S) * S := by
-          rw [h1, h2, h3, Nat.add_mul, h4]
-          omega
+    rw [Nat.add_mul, Nat.mul_add, Nat.mul_add, h1, h2, h3, Nat.add_mul, h4]
+    omega
   rw [h_expand]
   exact gcd_shift_general (r0 * r0 + c) (2 * r0 * m + m * m * S) S h_adm
-
 theorem erdosStrausEven (k : Nat) :
     4 * k * (2 * k) * (2 * k) = (2 * k) * (2 * k * (2 * k) + k * (2 * k) + k * (2 * k)) := by
   have h1 : 2 * k * (2 * k) = 4 * (k * k) := by
