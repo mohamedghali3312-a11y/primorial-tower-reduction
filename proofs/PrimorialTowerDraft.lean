@@ -101,7 +101,7 @@ theorem batemanHornQuadraticStep (c r0 m S : Nat)
     have h4 : (2 * r0 * m) * S = (r0 * m) * S + (r0 * m) * S := by
       have h_two : 2 * r0 = r0 + r0 := by omega
       rw [h_two, Nat.add_mul, Nat.add_mul]
-   calc (r0 + m * S) * (r0 + m * S) + c
+  calc (r0 + m * S) * (r0 + m * S) + c
       _ = r0 * r0 + r0 * (m * S) + (m * S) * r0 + (m * S) * (m * S) + c := by
           rw [Nat.add_mul, Nat.mul_add, Nat.mul_add]
           omega
