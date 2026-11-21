@@ -344,4 +344,72 @@ theorem erdosStrausMod24Eq13 (q : Nat) :
 #print axioms erdosStrausMod24Eq5
 #print axioms erdosStrausMod24Eq13
 
+-- ============================================================================
+-- CONJECTURE DE COLLATZ (3n + 1) : DESCENTE DYADIQUE PAR CLASSES MODULO 2^k
+-- ============================================================================
+
+def collatzStep (n : Nat) : Nat :=
+  if n % 2 = 0 then n / 2 else 3 * n + 1
+
+def collatzIter : Nat → Nat → Nat
+  | 0, n => n
+  | s + 1, n => collatzIter s (collatzStep n)
+
+-- 27. Collatz : descente en 1 étape pour n ≡ 0 (mod 2) (50 % des entiers)
+theorem collatzDescentMod2Eq0 (k : Nat) (hk : 0 < k) :
+    collatzIter 1 (2 * k) < 2 * k := by
+  dsimp only [collatzIter, collatzStep]
+  have h_even : (2 * k) % 2 = 0 := by omega
+  rw [if_pos h_even]
+  omega
+
+-- 28. Collatz : descente en 3 étapes pour n ≡ 1 (mod 4) (75 % cumulés des entiers)
+-- Trajectoire : 4k + 1 -> 12k + 4 -> 6k + 2 -> 3k + 1 < 4k + 1
+theorem collatzDescentMod4Eq1 (k : Nat) (hk : 0 < k) :
+    collatzIter 3 (4 * k + 1) < 4 * k + 1 := by
+  dsimp only [collatzIter, collatzStep]
+  have h1 : (4 * k + 1) % 2 ≠ 0 := by omega
+  rw [if_neg h1]
+  have h_eq1 : 3 * (4 * k + 1) + 1 = 12 * k + 4 := by omega
+  rw [h_eq1]
+  have h2 : (12 * k + 4) % 2 = 0 := by omega
+  rw [if_pos h2]
+  have h_eq2 : (12 * k + 4) / 2 = 6 * k + 2 := by omega
+  rw [h_eq2]
+  have h3 : (6 * k + 2) % 2 = 0 := by omega
+  rw [if_pos h3]
+  omega
+
+-- 29. Collatz : descente en 8 étapes pour n ≡ 3 (mod 16) (81,25 % cumulés des entiers)
+-- Trajectoire : 16k+3 -> 48k+10 -> 24k+5 -> 72k+16 -> 36k+8 -> 18k+4 -> 9k+2 < 16k+3
+theorem collatzDescentMod16Eq3 (k : Nat) :
+    collatzIter 6 (16 * k + 3) < 16 * k + 3 := by
+  dsimp only [collatzIter, collatzStep]
+  have h1 : (16 * k + 3) % 2 ≠ 0 := by omega
+  rw [if_neg h1]
+  have e1 : 3 * (16 * k + 3) + 1 = 48 * k + 10 := by omega
+  rw [e1]
+  have h2 : (48 * k + 10) % 2 = 0 := by omega
+  rw [if_pos h2]
+  have e2 : (48 * k + 10) / 2 = 24 * k + 5 := by omega
+  rw [e2]
+  have h3 : (24 * k + 5) % 2 ≠ 0 := by omega
+  rw [if_neg h3]
+  have e3 : 3 * (24 * k + 5) + 1 = 72 * k + 16 := by omega
+  rw [e3]
+  have h4 : (72 * k + 16) % 2 = 0 := by omega
+  rw [if_pos h4]
+  have e4 : (72 * k + 16) / 2 = 36 * k + 8 := by omega
+  rw [e4]
+  have h5 : (36 * k + 8) % 2 = 0 := by omega
+  rw [if_pos h5]
+  have e5 : (36 * k + 8) / 2 = 18 * k + 4 := by omega
+  rw [e5]
+  have h6 : (18 * k + 4) % 2 = 0 := by omega
+  rw [if_pos h6]
+  omega
+
+#print axioms collatzDescentMod2Eq0
+#print axioms collatzDescentMod4Eq1
+#print axioms collatzDescentMod16Eq3
 
